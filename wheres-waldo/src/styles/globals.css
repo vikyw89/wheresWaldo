@@ -1,6 +1,7 @@
 /* css reset */
 * {
-  /* outline: 1px solid grey; */
+  border-color: transparent; /* remove the border's colour */
+  box-shadow: 0 0 0 2px blue; /* emulate the border */
   padding: 0;
   margin: 0;
   box-sizing: border-box;
