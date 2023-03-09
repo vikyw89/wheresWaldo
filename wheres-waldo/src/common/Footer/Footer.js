@@ -4,7 +4,7 @@ import { Paper, Typography } from '@mui/material'
 export const Footer = () => {
     const theme = useTheme()
     return (
-        <Paper elevation="1" sx={{
+        <Paper elevation={1} sx={{
             // backgroundColor:theme.palette.background.paper,
             backgroundColor:'hsla(0,100%,100%,0%)',
             zIndex:'10',

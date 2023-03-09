@@ -71,12 +71,22 @@ export default function Home() {
     }
   },[])
 
-  // useEffect(async()=>{
-  //   const stageData = {
-  //     backgroundURL: await FirebaseStorage.getURL('images/waldoStage1.jpg')
-  //   }
-  //   setStage(stageData)
-  // },[])
+  useEffect(()=>{
+    const background = FirebaseStorage.getURL('images/waldoStage1.jpg')
+      .then(responseURL=>{
+        const stageData = {
+          backgroundURL: responseURL
+        }
+        setStage(stageData)
+      })
+    // (async()=>{
+    //   const imageURL =  await FirebaseStorage.getURL('images/waldoStage1.jpg')
+    //   const stageData = {
+    //     backgroundURL: imageURL
+    //   }
+    //   setStage(stageData)
+    // })()
+  },[])
   return (
     <Box sx={{
       backgroundColor: theme.palette.background.default,
@@ -105,7 +115,10 @@ export default function Home() {
             src={stage.backgroundURL}
             alt="stage1"
             fill
-            objectFit="contain"
+            style={{
+              objectFit:"contain",
+            }}
+            priority
             onLoad={({ target }) => {
               const { naturalWidth, naturalHeight } = target
               setPaddingTop(`calc(100% / (${naturalWidth} / ${naturalHeight})`);
