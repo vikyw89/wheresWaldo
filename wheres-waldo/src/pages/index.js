@@ -5,8 +5,10 @@ import { Footer } from '@/common/Footer/Footer'
 import { useTheme } from '@emotion/react'
 import { Box } from '@mui/system'
 import stage1 from './waldoStage1.jpg'
-import { useEffect, useState } from 'react'
-import { Avatar, Button, Zoom } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
+import { Avatar, Button, CircularProgress, LinearProgress, Typography, Zoom } from '@mui/material'
+import { getDownloadURL, getStorage, ref } from 'firebase/storage'
+import { FirebaseStorage } from '@/lib/firebase/firebase'
 const inter = Inter({ subsets: ['latin'] })
 
 const wantedData = [
@@ -27,10 +29,10 @@ const wantedData = [
   }
 ]
 
-
 export default function Home() {
   const theme = useTheme()
   const [wanted, setWanted] = useState(wantedData)
+  const [stage, setStage] = useState()
   const [paddingTop, setPaddingTop] = useState('0');
   const [cursorX, setCursorX] = useState()
   const [cursorY, setCursorY] = useState()
@@ -68,6 +70,13 @@ export default function Home() {
       window.removeEventListener('scroll', scrollHandler)
     }
   },[])
+
+  // useEffect(async()=>{
+  //   const stageData = {
+  //     backgroundURL: await FirebaseStorage.getURL('images/waldoStage1.jpg')
+  //   }
+  //   setStage(stageData)
+  // },[])
   return (
     <Box sx={{
       backgroundColor: theme.palette.background.default,
@@ -80,28 +89,36 @@ export default function Home() {
       overflow:'hidden'
     }}>
       <Header/>
-      <Box sx={{
-        flex:1,
-        position:'relative',
-        width:'100vw',
-        display:'flex',
-        justifyContent:'center',
-        overflow:'hidden'
-        }}
-        style={{paddingTop}}
-      >
-        <Image
-          src={stage1}
-          alt="stage1"
-          fill
-          objectFit="contain"
-          onLoad={({ target }) => {
-            const { naturalWidth, naturalHeight } = target
-            setPaddingTop(`calc(100% / (${naturalWidth} / ${naturalHeight})`);
+      {stage
+        ?
+        <Box sx={{
+          flex:1,
+          position:'relative',
+          width:'100vw',
+          display:'flex',
+          justifyContent:'center',
+          overflow:'hidden'
           }}
-          onClick={pointerHandler}
-        />
-      </Box>
+          style={{paddingTop}}
+        >
+          <Image
+            src={stage.backgroundURL}
+            alt="stage1"
+            fill
+            objectFit="contain"
+            onLoad={({ target }) => {
+              const { naturalWidth, naturalHeight } = target
+              setPaddingTop(`calc(100% / (${naturalWidth} / ${naturalHeight})`);
+            }}
+            onClick={pointerHandler}
+          />
+        </Box>
+        :
+        <Box sx={{ width: '100%', flex:'1', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column' }}>
+          <CircularProgress sx={{ width:'80vw'}}/>
+          <Typography variant="h5">Loading Stage</Typography>
+        </Box>
+      }
       {cursorX &&
         <Box>
           <Box sx={{

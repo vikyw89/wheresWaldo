@@ -2,6 +2,7 @@ import '@/styles/globals.css'
 import { purple,red } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { Firebase, FirebaseConfigInit, FirebaseInit } from '@/lib/firebase/config';
 
 const darkTheme = createTheme({
   palette: {
