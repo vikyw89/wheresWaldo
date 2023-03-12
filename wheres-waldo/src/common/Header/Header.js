@@ -1,8 +1,18 @@
+import { useSyncLocalStorage } from '@/lib/hooks/useSyncLocalStorage'
 import { useTheme } from '@emotion/react'
-import { Paper, Typography } from '@mui/material'
+import { Button, Paper, Typography } from '@mui/material'
+import { useEffect } from 'react'
 
 export const Header = () => {
+    const [state, setState] = useSyncLocalStorage('test')
+    const [activeTheme, setActiveTheme] = useSyncLocalStorage('theme')
     const theme = useTheme()
+
+    const clickHandler = () => {
+        // setActiveTheme(activeTheme === 'dark' ? 'light' : 'dark')
+        setState(state + 1)
+    }
+
     return (
         <Paper elevation={1} sx={{
             // backgroundColor:theme.palette.background.paper,
@@ -15,8 +25,11 @@ export const Header = () => {
             backgroundColor:'hsla(255,90%,30%,0%)',
             backdropFilter:'contrast(150%)'
         }}>
-            <Typography variant="h4">
-                whereIs ?
+            <Button onClick={clickHandler}>
+                Click
+            </Button>
+            <Typography variant="h4" >
+                whereIs ? {state}
             </Typography>
         </Paper>
     )

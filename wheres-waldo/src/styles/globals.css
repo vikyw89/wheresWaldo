@@ -1,4 +1,9 @@
 /* css reset */
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
 * {
   border-color: transparent; /* remove the border's colour */
   box-shadow: 0 0 0 2px blue; /* emulate the border */

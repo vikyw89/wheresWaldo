@@ -42,18 +42,13 @@ export default function Home() {
       setCursorX()
       return
     }
-    const target = {
-      x:e.pageX,
-      y:e.pageY
-    }
-    let {left, top, right, bottom} = e.target.getBoundingClientRect()
-    left = left + window.scrollX
-    top = top + window.scrollY
-    right = right + window.scrollX
-    bottom = bottom + window.scrollY
-
-    setCursorX(target.x - window.scrollX)
-    setCursorY(target.y - window.scrollY)
+    const [x,y] = [e.pageX, e.pageY]
+    const {imageHeight, imageWidth} = e.target.getBoundingClientRect()
+    const xRelativeCoordinate = Math.floor(x/imageWidth)
+    const yRelativeCoordinate = Math.floor(y/imageHeight)
+    console.log(e)
+    setCursorX(x - window.scrollX)
+    setCursorY(y - window.scrollY)
   }
 
   const selectCharHandler = (e) => {
@@ -92,8 +87,7 @@ export default function Home() {
       backgroundColor: theme.palette.background.default,
       display: 'flex',
       flexDirection:'column',
-      minHeight:'100vh',
-      width:'100vw',
+      minHeight:'100%',
       padding:0,
       margin:0,
       overflow:'hidden'
