@@ -3,7 +3,7 @@ import { purple,red } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Firebase, FirebaseConfigInit, FirebaseInit } from '@/lib/firebase/config';
-import { useSyncLocalStorage } from '@/lib/hooks/useSyncLocalStorage';
+import { useSyncLocalStorage, useSyncSessionStorage } from '@/lib/hooks/useSync';
 
 const darkTheme = createTheme({
   palette: {
@@ -35,9 +35,9 @@ const lightTheme = createTheme({
 });
 
 export default function App({ Component, pageProps }) {
-  const [theme, setTheme] = useSyncLocalStorage('theme')
+  const [theme, setTheme] = useSyncSessionStorage('theme')
   const [state, setState] = useSyncLocalStorage('test')
-  console.log(state)
+  console.log(theme)
   return (
     <ThemeProvider theme={theme === 'dark' ? lightTheme : darkTheme}>
       <CssBaseline/>

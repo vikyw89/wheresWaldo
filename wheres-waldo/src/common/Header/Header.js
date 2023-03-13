@@ -1,16 +1,17 @@
-import { useSyncLocalStorage } from '@/lib/hooks/useSyncLocalStorage'
+import { useSyncLocalStorage, useSyncSessionStorage } from '@/lib/hooks/useSync'
 import { useTheme } from '@emotion/react'
 import { Button, Paper, Typography } from '@mui/material'
 import { useEffect } from 'react'
 
 export const Header = () => {
     const [state, setState] = useSyncLocalStorage('test')
-    const [activeTheme, setActiveTheme] = useSyncLocalStorage('theme')
+    const [activeTheme, setActiveTheme] = useSyncSessionStorage('theme')
     const theme = useTheme()
 
     const clickHandler = () => {
         // setActiveTheme(activeTheme === 'dark' ? 'light' : 'dark')
         setState(state + 1)
+        setActiveTheme(activeTheme === 'light' ? 'dark' : 'light')
     }
 
     return (
