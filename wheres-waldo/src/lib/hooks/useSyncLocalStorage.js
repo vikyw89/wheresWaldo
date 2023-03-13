@@ -33,7 +33,6 @@ export const useSyncLocalStorage = (saveDirectory='global') => {
     const setState = (arg) => {
         localStorage[saveDirectory] = JSON.stringify(arg);
         emitChange();
-        console.log(subscribers)
     };
 
     const state = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
