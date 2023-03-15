@@ -1,19 +1,31 @@
 import { useSyncExternalStore } from "react";
 
+const defaultConfig = {
+    storageLocationPrefix: "useSync-",
+};
+
 const useSyncLocalStorageSubscribers = {};
+
 const useSyncSessionStorageSubscribers = {};
 
-export const useSyncLocalStorage = (saveDirectory = 'global') => {
+export const useSyncLocalStorage = (slot = "global") => {
+    const config = defaultConfig;
+
+    const saveDirectory = `${config.storageLocationPrefix}${slot}`;
     if (!useSyncLocalStorageSubscribers[saveDirectory]) {
         useSyncLocalStorageSubscribers[saveDirectory] = [];
     }
 
     const subscribe = (callback) => {
-        useSyncLocalStorageSubscribers[saveDirectory] = [...useSyncLocalStorageSubscribers[saveDirectory], callback];
+        useSyncLocalStorageSubscribers[saveDirectory] = [
+            ...useSyncLocalStorageSubscribers[saveDirectory],
+            callback,
+        ];
         return () => {
-            useSyncLocalStorageSubscribers[saveDirectory] = useSyncLocalStorageSubscribers[saveDirectory].filter(
-                (el) => el !== callback
-            );
+            useSyncLocalStorageSubscribers[saveDirectory] =
+                useSyncLocalStorageSubscribers[saveDirectory].filter(
+                    (el) => el !== callback
+                );
         };
     };
 
@@ -41,17 +53,25 @@ export const useSyncLocalStorage = (saveDirectory = 'global') => {
     return [state ? JSON.parse(state) : undefined, setState];
 };
 
-export const useSyncSessionStorage = (saveDirectory = 'global') => {
+export const useSyncSessionStorage = (slot = "global") => {
+    const config = defaultConfig;
+
+    const saveDirectory = `${config.storageLocationPrefix}${slot}`;
+
     if (!useSyncSessionStorageSubscribers[saveDirectory]) {
         useSyncSessionStorageSubscribers[saveDirectory] = [];
     }
 
     const subscribe = (callback) => {
-        useSyncSessionStorageSubscribers[saveDirectory] = [...useSyncSessionStorageSubscribers[saveDirectory], callback];
+        useSyncSessionStorageSubscribers[saveDirectory] = [
+            ...useSyncSessionStorageSubscribers[saveDirectory],
+            callback,
+        ];
         return () => {
-            useSyncSessionStorageSubscribers[saveDirectory] = useSyncSessionStorageSubscribers[saveDirectory].filter(
-                (el) => el !== callback
-            );
+            useSyncSessionStorageSubscribers[saveDirectory] =
+                useSyncSessionStorageSubscribers[saveDirectory].filter(
+                    (el) => el !== callback
+                );
         };
     };
 

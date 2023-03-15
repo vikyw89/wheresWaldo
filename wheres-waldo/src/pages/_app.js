@@ -36,10 +36,8 @@ const lightTheme = createTheme({
 
 export default function App({ Component, pageProps }) {
   const [theme, setTheme] = useSyncSessionStorage('theme')
-  const [state, setState] = useSyncLocalStorage('test')
-  console.log(theme)
   return (
-    <ThemeProvider theme={theme === 'dark' ? lightTheme : darkTheme}>
+    <ThemeProvider theme={darkTheme}>
       <CssBaseline/>
       <Component {...pageProps} />
     </ThemeProvider>

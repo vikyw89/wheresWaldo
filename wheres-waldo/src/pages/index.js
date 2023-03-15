@@ -4,167 +4,184 @@ import { Header } from '@/common/Header/Header'
 import { Footer } from '@/common/Footer/Footer'
 import { useTheme } from '@emotion/react'
 import { Box } from '@mui/system'
-import stage1 from './waldoStage1.jpg'
-import { useEffect, useRef, useState } from 'react'
-import { Avatar, Button, CircularProgress, LinearProgress, Typography, Zoom } from '@mui/material'
-import { getDownloadURL, getStorage, ref } from 'firebase/storage'
-import { FirebaseStorage } from '@/lib/firebase/firebase'
+import { useEffect, useState } from 'react'
+import { Avatar, Button, ButtonGroup, CircularProgress, Typography, Zoom } from '@mui/material'
+
 const inter = Inter({ subsets: ['latin'] })
 
-const wantedData = [
-  {
-    name:'evilMinion',
-    portrait:'/evilMinion.png',
-    isFound:false
-  },
-  {
-    name:'babaYaga',
-    portrait:'/babaYaga.png',
-    isFound:false
-  },
-  {
-    name:'bowser',
-    portrait:'/bowser.png',
-    isFound:false
+const defaultState = {
+  wantedList: [
+    {
+      name: 'evilMinion',
+      isFound: false
+    },
+    {
+      name: 'babaYaga',
+      isFound: false
+    },
+    {
+      name: 'bowser',
+      isFound: false
+    }
+  ],
+  stage: false,
+  paddingTop: 0,
+  cursor: {
+    display: false,
+    x: undefined,
+    y: undefined
   }
-]
+}
 
 export default function Home() {
   const theme = useTheme()
-  const [wanted, setWanted] = useState(wantedData)
-  const [stage, setStage] = useState()
-  const [paddingTop, setPaddingTop] = useState('0');
-  const [cursorX, setCursorX] = useState()
-  const [cursorY, setCursorY] = useState()
+  const [state, setState] = useState(defaultState)
 
   const pointerHandler = (e) => {
-    if (cursorX) {
-      setCursorX()
+    // target frame toggle
+    if (state.cursor.display) {
+      setState(prev => ({
+        ...state,
+        cursor: {
+          ...prev.cursor,
+          display: false
+        }
+      }))
       return
     }
-    const [x,y] = [e.pageX, e.pageY]
-    const {imageHeight, imageWidth} = e.target.getBoundingClientRect()
-    const xRelativeCoordinate = Math.floor(x/imageWidth)
-    const yRelativeCoordinate = Math.floor(y/imageHeight)
-    console.log(e)
-    setCursorX(x - window.scrollX)
-    setCursorY(y - window.scrollY)
+
+    const [x, y] = [e.pageX, e.pageY]
+    const { height, width } = e.target
+    const xRelativeCoordinate = Math.floor(x * 100 / width)
+    const yRelativeCoordinate = Math.floor(y * 100 / height)
+    setState(prev => ({
+      ...prev,
+      cursor: {
+        ...prev.cursor,
+        display: true,
+        x: x - window.scrollX,
+        y: y - window.scrollY
+      }
+    }))
+    console.log('click')
   }
 
-  const selectCharHandler = (e) => {
+  const selectWantedHandler = (e) => {
     console.log(e)
   }
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     const scrollHandler = (e) => {
-      setCursorX(false)
-      console.log(cursorX)
+      setState(prev => ({
+        ...prev,
+        cursor: {
+          ...prev.cursor,
+          display: false
+        }
+      }))
     }
     window.addEventListener('scroll', scrollHandler)
-    return ( )=>{
+    return () => {
       window.removeEventListener('scroll', scrollHandler)
     }
-  },[])
+  }, [])
 
-  useEffect(()=>{
-    const background = FirebaseStorage.getURL('images/waldoStage1.jpg')
-      .then(responseURL=>{
-        const stageData = {
-          backgroundURL: responseURL
-        }
-        setStage(stageData)
-      })
-    // (async()=>{
-    //   const imageURL =  await FirebaseStorage.getURL('images/waldoStage1.jpg')
-    //   const stageData = {
-    //     backgroundURL: imageURL
-    //   }
-    //   setStage(stageData)
-    // })()
-  },[])
+  useEffect(() => {
+    const asyncf = (async () => {
+    })()
+
+  }, [])
   return (
     <Box sx={{
       backgroundColor: theme.palette.background.default,
       display: 'flex',
-      flexDirection:'column',
-      minHeight:'100%',
-      padding:0,
-      margin:0,
-      overflow:'hidden'
+      flexDirection: 'column',
+      minHeight: '100%',
+      padding: 0,
+      margin: 0,
+      overflow: 'hidden'
     }}>
-      <Header/>
-      {stage
-        ?
-        <Box sx={{
-          flex:1,
-          position:'relative',
-          width:'100vw',
-          display:'flex',
-          justifyContent:'center',
-          overflow:'hidden'
-          }}
-          style={{paddingTop}}
-        >
+      <Header />
+      <Box sx={{
+        flex: 1,
+        position: 'relative',
+        width: '100vw',
+        display: 'flex',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        paddingTop: `${state.paddingTop}`
+      }}
+      >
+        {state.stage
+          ?
           <Image
-            src={stage.backgroundURL}
+            src={state.stage.backgroundURL}
             alt="stage1"
             fill
             style={{
-              objectFit:"contain",
+              objectFit: "contain",
             }}
             priority
             onLoad={({ target }) => {
               const { naturalWidth, naturalHeight } = target
-              setPaddingTop(`calc(100% / (${naturalWidth} / ${naturalHeight})`);
+              setState(prev => ({
+                ...prev,
+                paddingTop: `calc(100% / (${naturalWidth} / ${naturalHeight}))`
+              }))
             }}
             onClick={pointerHandler}
           />
-        </Box>
-        :
-        <Box sx={{ width: '100%', flex:'1', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column' }}>
-          <CircularProgress sx={{ width:'80vw'}}/>
-          <Typography variant="h5">Loading Stage</Typography>
-        </Box>
-      }
-      {cursorX &&
+          :
+          <Box sx={{ height: '100vh', width: '100%', flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', border: '5px solid red' }}>
+            <CircularProgress sx={{ width: '80vw' }} />
+            <Typography variant="h5">Loading Stage</Typography>
+          </Box>
+        }
+      </Box>
+      {state.cursor.display &&
         <Box>
           <Box sx={{
             border: '5px dashed red',
             borderRadius: '100px',
-            position:'fixed',
-            top:cursorY - 50,
-            left:cursorX - 50,
+            position: 'fixed',
+            top: state.cursor.y - 50,
+            left: state.cursor.x - 50,
             height: '100px',
             width: '100px',
             backdropFilter: 'contrast(120%)'
           }}>
           </Box>
-          <Zoom in={cursorX}>
-            <Box sx={{
-              borderRadius:'99px',
-              position:'fixed',
-              top:cursorY - 25,
-              left:cursorX + 50,
-              display:'flex'
-            }}>
+          <Zoom in={state.cursor.x}>
+            <ButtonGroup
+              orientation="horizontal"
+              aria-label="vertical outlined button group"
+              sx={{
+                position: 'fixed',
+                top: state.cursor.y - 25,
+                left: state.cursor.x + 50,
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+            >
               {
-                wanted.map((el,index)=>{
+                state.wantedList.filter(el => el.isFound === false).map((el, index) => {
                   return (
-                    <Avatar
+                    <Button
                       key={index}
-                      alt={el.name}
-                      src={el.portrait}
-                      onClick={selectCharHandler}
-                    />
+                      variant="contained"
+                      color="error"
+                    >
+                      {el.name}
+                    </Button>
                   )
                 })
               }
-            </Box>
+            </ButtonGroup>
           </Zoom>
         </Box>
       }
 
-      <Footer/>
+      <Footer />
     </Box>
   )
 }
