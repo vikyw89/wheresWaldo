@@ -1,14 +1,14 @@
 import { app } from "./config"
-import { collection, getDocs, getFirestore, query, updateDoc, addDoc, doc, deleteDoc, getDoc, serverTimestamp, collectionGroup, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, getFirestore, query, updateDoc, addDoc, doc, deleteDoc, setDoc, getDoc, serverTimestamp, collectionGroup, onSnapshot } from "firebase/firestore";
 
 export class FirebaseFirestore {
     static db = getFirestore(app)
     
     static createDoc = async (path, data) => {
         const colRef = collection(this.db, path)
-        const docRef = doc(this.db, path)
+        const docRef = doc(colRef)
         const uid = docRef.id
-        const response = await addDoc(colRef, {
+        const response = await setDoc(docRef, {
             ...data,
             uid,
             date_created: serverTimestamp(),
