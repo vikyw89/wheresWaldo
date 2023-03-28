@@ -104,10 +104,11 @@ export default function Home() {
   // useEffect(() => {
   //   const asyncf = (async () => {})();
   // }, []);
+  console.log(data?.[0]?.image_url);
   return (
     <Box
       sx={{
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: "black",
         display: "flex",
         flexDirection: "column",
         minHeight: "100%",
@@ -128,27 +129,30 @@ export default function Home() {
           paddingTop: ``,
         }}
       >
-        {/* {data && (
-          <Image
-            src={data[0].image_url}
-            alt="stage1"
-            fill
-            style={{
-              objectFit: "contain",
-            }}
-            priority
-            onLoad={({ target }) => {
-              const { naturalWidth, naturalHeight } = target;
-              setState((prev) => ({
-                ...prev,
-                paddingTop: `calc(100% / (${naturalWidth} / ${naturalHeight}))`,
-              }));
-            }}
-            onClick={pointerHandler}
-          />
-        )} */}
+        <div
+          style={{
+            width: "100%",
+            minHeight: "100vh",
+            height:'auto',
+            overflowY:'scroll'
+          }}
+        >
+          {data && (
+            <Image
+              src={data[0].image_url}
+              alt="Current Image"
+              width="0"
+              height="0"
+              sizes="100vw"
+              style={{
+                width:'100%',
+                height:'auto'
+              }}
+            />
+          )}
+        </div>
 
-        {loading && (
+        {/* {loading && (
           <Box
             sx={{
               height: "100vh",
@@ -164,8 +168,9 @@ export default function Home() {
             <CircularProgress sx={{ width: "80vw" }} />
             <Typography variant="h5">Loading Stage</Typography>
           </Box>
-        )}
+        )} */}
       </Box>
+
       {state?.cursor?.display && (
         <Box>
           <Box
