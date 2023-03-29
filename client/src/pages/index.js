@@ -1,20 +1,19 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import { Header } from "@/common/Header/Header";
-import { Footer } from "@/common/Footer/Footer";
-import { useTheme } from "@emotion/react";
-import { Box } from "@mui/system";
-import { useEffect, useState } from "react";
+import { Footer } from "@/common/footer";
+import { Header } from "@/common/header";
 import {
   Button,
   ButtonGroup,
   CircularProgress,
-  LinearProgress,
   Typography,
   Zoom,
 } from "@mui/material";
+import { Box } from "@mui/system";
+import { where } from "firebase/firestore";
 import { FirebaseFirestore } from "firestore-web-wrapper";
-import { createSyncV, debugSyncV, useQueryV, useSyncV } from "use-sync-v";
+import { Inter } from "next/font/google";
+import Image from "next/image";
+import { useState } from "react";
+import { debugSyncV, updateSyncV, useQueryV, useSyncV } from "use-sync-v";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,11 +43,35 @@ const defaultState = {
 
 export default function Home() {
   const theme = useSyncV("theme.dark");
-  const [state, setState] = useState(defaultState);
+  const ui = useSyncV("ui");
   // fetch stage
   const { data, loading, error } = useQueryV("stages", async () => {
     return await FirebaseFirestore.readCol("stages");
   });
+
+  // debugSyncV("stages.data")
+  const clickHandler = (e) => {
+    if (ui?.showTarget) {
+      updateSyncV("ui.showTarget", false);
+      return;
+    }
+    const [x, y] = [e.pageX, e.pageY];
+    const { height, width } = e.target;
+    const xRelativeCoordinate = Math.floor((x * 100) / width);
+    const yRelativeCoordinate = Math.floor((y * 100) / height);
+    updateSyncV("ui.clickCoordinate.screen", {
+      x: x - window.scrollX,
+      y: y - window.scrollY,
+    });
+    updateSyncV("ui.clickCoordinate.image", {
+      x:xRelativeCoordinate,
+      y:yRelativeCoordinate
+    })
+    updateSyncV("ui.showTarget", true);
+    debugSyncV("ui.clickCoordinate.image");
+
+    // checkCoordinate();
+  };
 
   const pointerHandler = (e) => {
     // target frame toggle
@@ -83,32 +106,10 @@ export default function Home() {
     console.log(e);
   };
 
-  useEffect(() => {
-    const scrollHandler = (e) => {
-      setState((prev) => ({
-        ...prev,
-        cursor: {
-          ...prev.cursor,
-          display: false,
-        },
-      }));
-    };
-    window.addEventListener("scroll", scrollHandler);
-    return () => {
-      window.removeEventListener("scroll", scrollHandler);
-    };
-  }, []);
-  // useEffect(() => {
-  //   debugSyncV("stages");
-  // });
-  // useEffect(() => {
-  //   const asyncf = (async () => {})();
-  // }, []);
-  console.log(data?.[0]?.image_url);
   return (
     <Box
       sx={{
-        backgroundColor: "black",
+        backgroundColor: `${theme.palette.background.default}`,
         display: "flex",
         flexDirection: "column",
         minHeight: "100%",
@@ -129,15 +130,15 @@ export default function Home() {
           paddingTop: ``,
         }}
       >
-        <div
-          style={{
-            width: "100%",
-            minHeight: "100vh",
-            height:'auto',
-            overflowY:'scroll'
-          }}
-        >
-          {data && (
+        {data && (
+          <div
+            style={{
+              width: "100%",
+              minHeight: "100vh",
+              height: "auto",
+              overflowY: "scroll",
+            }}
+          >
             <Image
               src={data[0].image_url}
               alt="Current Image"
@@ -145,14 +146,15 @@ export default function Home() {
               height="0"
               sizes="100vw"
               style={{
-                width:'100%',
-                height:'auto'
+                width: "100%",
+                height: "auto",
               }}
+              onClick={clickHandler}
             />
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* {loading && (
+        {loading && (
           <Box
             sx={{
               height: "100vh",
@@ -168,36 +170,36 @@ export default function Home() {
             <CircularProgress sx={{ width: "80vw" }} />
             <Typography variant="h5">Loading Stage</Typography>
           </Box>
-        )} */}
+        )}
       </Box>
 
-      {state?.cursor?.display && (
+      {/* {ui?.showTarget && (
         <Box>
           <Box
             sx={{
               border: "5px dashed red",
               borderRadius: "100px",
               position: "fixed",
-              top: state.cursor.y - 50,
-              left: state.cursor.x - 50,
+              top: ui.clickCoordinate.screen.y - 50,
+              left: ui.clickCoordinate.screen.x - 50,
               height: "100px",
               width: "100px",
               backdropFilter: "contrast(120%)",
             }}
           ></Box>
-          <Zoom in={state.cursor.x}>
+          <Zoom in={ui.clickCoordinate.screen.x}>
             <ButtonGroup
               orientation="horizontal"
               aria-label="vertical outlined button group"
               sx={{
                 position: "fixed",
-                top: state.cursor.y - 25,
-                left: state.cursor.x + 50,
+                top: ui.clickCoordinate.screen.y - 25,
+                left: ui.clickCoordinate.screen.x + 50,
                 display: "flex",
                 flexDirection: "column",
               }}
             >
-              {state.wantedList
+              {ui.wantedList
                 .filter((el) => el.isFound === false)
                 .map((el, index) => {
                   return (
@@ -209,7 +211,7 @@ export default function Home() {
             </ButtonGroup>
           </Zoom>
         </Box>
-      )}
+      )} */}
 
       <Footer />
     </Box>

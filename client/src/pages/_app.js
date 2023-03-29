@@ -2,9 +2,10 @@ import { useSyncSessionStorage } from "@/lib/hooks/useSync";
 import { initStore } from "@/lib/store/gameData";
 import "@/styles/globals.css";
 import CssBaseline from "@mui/material/CssBaseline";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { createSyncV } from "use-sync-v";
+import { createTheme } from "@mui/material/styles";
+import { readSyncV, updateSyncV } from "use-sync-v";
 
+import {cloneDeep} from "lodash-es"
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -28,23 +29,25 @@ const darkTheme = createTheme({
     },
   },
 });
-createSyncV("theme.dark", darkTheme)
+
+updateSyncV("theme.dark", darkTheme);
 const lightTheme = createTheme({
   palette: {
     mode: "light",
   },
 });
-createSyncV("theme.light", lightTheme)
+
+updateSyncV("theme.light", lightTheme);
 
 initStore();
 
 export default function App({ Component, pageProps }) {
   const [theme, setTheme] = useSyncSessionStorage("theme");
+
   return (
     <>
       <CssBaseline />
       <Component {...pageProps} />
     </>
-
   );
 }

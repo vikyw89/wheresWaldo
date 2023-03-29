@@ -5,8 +5,8 @@ html, body {
 }
 
 * {
-  border-color: transparent; /* remove the border's colour */
-  box-shadow: 0 0 0 2px blue; /* emulate the border */
+  border-color: transparent; 
+  /* box-shadow: 0 0 0 2px blue; */
   padding: 0;
   margin: 0;
   box-sizing: border-box;
