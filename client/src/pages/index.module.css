@@ -1,0 +1,15 @@
+.root {
+    display: flex;
+    flex-direction: column; 
+    min-height: 100vh;
+}
+
+.main {
+    background-color: blueviolet;
+    flex:1;
+    text-align: center;
+}
+
+.image {
+    /* object-fit: contain; */
+}
