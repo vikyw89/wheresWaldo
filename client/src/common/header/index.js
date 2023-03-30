@@ -4,6 +4,7 @@ import { Button, Paper, Typography } from '@mui/material'
 import { useEffect } from 'react'
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { debugSyncV, useSyncV } from 'use-sync-v';
+import { Timer } from '../timer';
 
 export const Header = () => {
     const [activeTheme, setActiveTheme] = useSyncSessionStorage('theme')
@@ -28,6 +29,7 @@ export const Header = () => {
             }}>
                 whereIs ?
             </Typography>
+            <Timer/>
         </Paper>
     )
 }
