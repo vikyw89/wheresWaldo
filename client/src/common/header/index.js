@@ -7,12 +7,8 @@ import { debugSyncV, useSyncV } from 'use-sync-v';
 import { Timer } from '../timer';
 
 export const Header = () => {
-    const [activeTheme, setActiveTheme] = useSyncSessionStorage('theme')
-    const theme = useSyncV("theme.dark")
+    const theme = useSyncV("theme")
 
-    const clickHandler = () => {
-        setActiveTheme(activeTheme === 'light' ? 'dark' : 'light')
-    }
     return (
         <Paper elevation={1} sx={{
             padding: '10px',
@@ -25,11 +21,10 @@ export const Header = () => {
             backdropFilter:'contrast(150%)'
         }}>
             <Typography variant="h4" sx={{
-                color:`${theme.palette.primary.contrastText}`
+                color:theme.palette.text.primary
             }}>
                 whereIs ?
             </Typography>
-            <Timer/>
         </Paper>
     )
 }
