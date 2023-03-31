@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import { FirebaseFirestore } from "firestore-web-wrapper";
 import Image from "next/image";
-import { useQueryV, useSyncV } from "use-sync-v";
+import { updateSyncV, useQueryV, useSyncV } from "use-sync-v";
 import { Loading } from "../loading";
 
 const fetchStages = async () => {
@@ -10,12 +10,14 @@ const fetchStages = async () => {
 };
 
 const enterWorld = (worldData) => {
-
+  updateSyncV("show.stageSelector", false)
+  updateSyncV("show.gameScreen", true)
+  updateSyncV("state.selectedStage", worldData)
 }
 
 export const StageSelector = () => {
   const theme = useSyncV("theme");
-  const stages = useQueryV("stages", fetchStages);
+  const stages = useQueryV("state.stages", fetchStages);
 
   return (
     <>
@@ -36,7 +38,7 @@ export const StageSelector = () => {
               fontWeight: "bold",
               textAlign: "center",
             }}
-            variant="h6"
+            variant="h4"
             color="secondary"
           >
             WORLD SELECTION
@@ -108,7 +110,7 @@ export const StageSelector = () => {
                         color: theme.palette.text.primary,
                       }}
                     >
-                      Best Record : {el.best_time / 60} mins
+                      Best Record : --s
                     </Typography>
                     <Button
                       sx={{

@@ -1,102 +1,61 @@
 import { Footer } from "@/common/footer";
+import { GameScreen } from "@/common/gameScreen";
 import { Header } from "@/common/header";
 import { StageSelector } from "@/common/stageSelector";
+import { Win } from "@/common/win";
 import { Box } from "@mui/system";
 import { FirebaseFirestore } from "firestore-web-wrapper";
 import { Inter } from "next/font/google";
-import { useEffect, useState } from "react";
 import { updateSyncV, useQueryV, useSyncV } from "use-sync-v";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const store = {
-  ui: {
-    phase: {
-      showTarget: false,
-      showTimer: false,
-      showNotif: false,
-      stage: 0,
-      stageSelector:true,
-      stageEdit: false
-    },
+export const state = {
+  show: {
+    stageSelector: true,
+    snipe: false,
+    timer: false,
+    notif: false,
+    stageEdit: false,
+    gameScreen: false,
+    win: false,
   },
-  stages: null,
-  player : {
-  }
+  state: {
+    stages: null,
+    selectedStage: null,
+    notif: null,
+  },
 };
 
-updateSyncV("ui", store.ui)
-
+updateSyncV("show", state.show);
+updateSyncV("data", state.state);
 export default function Home() {
-  const theme = useSyncV("theme")
-  
+  const theme = useSyncV("theme");
+
+  const show = useSyncV("show");
+
+  const win = useSyncV("show.win");
+
   const { data, loading, error } = useQueryV("stages", async () => {
     return await FirebaseFirestore.readCol("stages");
   });
-
-  const [stage, setStage] = useState({})
-
-  useEffect(()=>{
-    if (!data) return
-    setStage(data[0])
-  },[data])
 
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems:'center',
-        justifyContent:'center',
+        alignItems: "center",
+        justifyContent: "center",
         minHeight: "100%",
-        margin:'0 auto'
+        margin: "0 auto",
       }}
     >
       <Header />
-      <StageSelector />
-      {/* <GameScreen stage={}/> */}
+      {show.stageSelector && <StageSelector />}
+      {show.gameScreen && <GameScreen />}
+      {show.win && <Win />}
       <Footer />
     </Box>
   );
 }
-
-  // useEffect(() => {
-  //   const scrollHandler = (e) => {
-  //     updateSyncV("ui.showTarget", false);
-  //   };
-  //   window.addEventListener("scroll", scrollHandler);
-  // }, [data]);
-
-  // const clickHandler = (e) => {
-  //   if (ui?.showTarget) {
-  //     updateSyncV("ui.showTarget", (p) => {
-  //       return !p;
-  //     });
-  //     return;
-  //   }
-  //   const [x, y] = [e.pageX, e.pageY];
-  //   const { height, width } = e.target;
-  //   const xRelativeCoordinate = Math.floor((x * 100) / width);
-  //   const yRelativeCoordinate = Math.floor((y * 100) / height);
-  //   updateSyncV("ui.clickCoordinate.screen", {
-  //     x: x - window.scrollX,
-  //     y: y - window.scrollY,
-  //   });
-  //   updateSyncV("ui.clickCoordinate.image", {
-  //     x: xRelativeCoordinate,
-  //     y: yRelativeCoordinate,
-  //   });
-  //   updateSyncV("ui.showTarget", true);
-  // };
-
-  // const validateCatchHandler = (e) => {
-  //   updateSyncV("ui.showTarget", false);
-  //   const doc_id = e.target.dataset["doc_id"];
-
-  //   // get document data for that doc_id
-  //   const playerGuess = wanted.data.filter((el) => {
-  //     return el.doc_id === doc_id;
-  //   })[0];
-
-  //   validateCoordinate(ui.clickCoordinate.image, playerGuess);
-  // };

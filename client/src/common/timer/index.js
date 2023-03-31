@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { updateSyncV, useSyncV } from "use-sync-v";
 
 export const Timer = () => {
-  const timer = useSyncV("timer");
+  const timer = useSyncV("state.timer");
 
   useEffect(() => {
     const timerInterval = setInterval(() => {
-      updateSyncV("timer", (p) => {
+      updateSyncV("state.timer", (p) => {
         if (!p) {
           p = 0;
         }
@@ -24,7 +24,7 @@ export const Timer = () => {
         display: "flex",
         color: "white",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "center"
       }}
     >
       <span>countdown</span>

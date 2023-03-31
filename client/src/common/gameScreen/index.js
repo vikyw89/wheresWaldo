@@ -1,8 +1,51 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
-import { TargetDisplay } from "../targetDisplay";
+import { useEffect } from "react";
+import {
+  deleteSyncV,
+  readSyncV,
+  updateSyncV, useSyncV
+} from "use-sync-v";
+import { Snipe } from "../snipe";
+
+const imageClickHandler = (e) => {
+  updateSyncV("show.snipe", (p) => !p);
+
+  const [x, y] = [e.pageX, e.pageY];
+  const { height, width } = e.target;
+  const xRelativeCoordinate = Math.floor((x * 100) / width);
+  const yRelativeCoordinate = Math.floor((y * 100) / height);
+
+  updateSyncV("state.snipe.screen", {
+    x: x - window.scrollX,
+    y: y - window.scrollY,
+  });
+
+  updateSyncV("state.snipe.image", {
+    x: xRelativeCoordinate,
+    y: yRelativeCoordinate,
+  });
+};
 
 export const GameScreen = () => {
+  const selectedStage = useSyncV("state.selectedStage");
+  const show = useSyncV("show");
+  const state = useSyncV("state");
+  
+  useEffect(() => {
+    const scrollHandler = (e) => {
+      updateSyncV("show.snipe", false);
+      deleteSyncV("show.notif");
+    };
+    window.addEventListener("scroll", scrollHandler);
+    return () => {
+      window.removeEventListener("scroll", scrollHandler);
+    };
+  }, [selectedStage]);
+
+  const startTimer = () => {
+    updateSyncV("show.timer", true);
+  };
   return (
     <>
       <Box
@@ -15,7 +58,7 @@ export const GameScreen = () => {
           paddingTop: ``,
         }}
       >
-        {data && (
+        {selectedStage && (
           <div
             style={{
               width: "100%",
@@ -23,8 +66,8 @@ export const GameScreen = () => {
             }}
           >
             <Image
-              src={data[0].image_url}
-              alt="Current Image"
+              src={selectedStage.image_url}
+              alt={selectedStage.name}
               width="0"
               height="0"
               sizes="100vw"
@@ -32,14 +75,13 @@ export const GameScreen = () => {
                 width: "100%",
                 height: "auto",
               }}
-              onClick={clickHandler}
+              onClick={imageClickHandler}
+              onLoad={startTimer}
             />
           </div>
         )}
-
-        {loading && <Loading />}
       </Box>
-      {ui?.notif?.targetCaught && (
+      {show?.notif && (
         <Typography
           variant="h6"
           sx={{
@@ -47,17 +89,17 @@ export const GameScreen = () => {
             border: "5px dashed red",
             borderRadius: "100px",
             position: "fixed",
-            top: ui.clickCoordinate.screen.y - 50,
-            left: ui.clickCoordinate.screen.x - 50,
+            top: state.snipe.screen.y - 50,
+            left: state.snipe.screen.x - 50,
             height: "100px",
             width: "100px",
             backdropFilter: "contrast(120%)",
           }}
         >
-          {ui.notif.targetCaught}
+          {state.notif}
         </Typography>
       )}
-      {ui?.showTarget && <TargetDisplay />}
+      {show?.snipe && <Snipe />}
     </>
   );
 };
