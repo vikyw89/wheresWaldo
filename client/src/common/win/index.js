@@ -1,20 +1,15 @@
-import { ShowChart } from "@mui/icons-material";
-import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Paper, TextField } from "@mui/material";
 import { FirebaseFirestore } from "firestore-web-wrapper";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { readSyncV, updateAsyncV, updateSyncV, useSyncV } from "use-sync-v";
+import { useState } from "react";
+import { readSyncV, useSyncV } from "use-sync-v";
 import { TextBubble } from "./textBubble";
 
 export const Win = () => {
-  const theme = useSyncV("theme");
-  const show = useSyncV("show");
   const stageDocId = readSyncV("state.selectedStage.doc_id");
   const originalDoc = readSyncV("state.stages.data").filter(
     (el) => el.doc_id === stageDocId
   )[0];
   const [name, setName] = useState("");
-  console.log({ stageDocId, originalDoc });
 
   const uploadRecord = () => {
     const newRecord = {
@@ -27,7 +22,7 @@ export const Win = () => {
       records: [...originalDoc.records, newRecord],
     };
 
-    const response = FirebaseFirestore.updateDoc(
+    FirebaseFirestore.updateDoc(
       `stages/${stageDocId}`,
       updatedDoc
     );

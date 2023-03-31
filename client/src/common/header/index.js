@@ -1,15 +1,7 @@
-import {
-  useSyncLocalStorage,
-  useSyncSessionStorage,
-} from "@/lib/hooks/useSync";
-import { useTheme } from "@emotion/react";
-import { Button, Paper, Typography } from "@mui/material";
-import { useEffect } from "react";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import { debugSyncV, updateSyncV, useSyncV } from "use-sync-v";
-import { Timer } from "../timer";
+import { Paper, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import { state } from "@/pages";
+import { useSyncV } from "use-sync-v";
+import { Timer } from "../timer";
 
 export const Header = () => {
   const router = useRouter();

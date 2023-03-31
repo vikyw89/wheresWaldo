@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { FirebaseFirestore } from "firestore-web-wrapper";
 import Image from "next/image";
 import { useEffect } from "react";

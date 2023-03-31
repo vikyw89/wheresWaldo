@@ -7,7 +7,7 @@ const validateCoordinate = (playerCLick, playerGuess) => {
   const { x, y } = playerCLick;
   const { startX, startY, endX, endY } = playerGuess.coordinate;
 
-  // by elimiation
+  // by elimination
   if (startX > x || startY > y || endX < x || endY < y) {
     updateSyncV("show.notif", true)
     updateSyncV("state.notif", "NOPE");

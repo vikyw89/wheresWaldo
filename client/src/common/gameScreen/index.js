@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import { useEffect } from "react";
-import { deleteSyncV, readSyncV, updateSyncV, useSyncV } from "use-sync-v";
+import { deleteSyncV, updateSyncV, useSyncV } from "use-sync-v";
 import { Snipe } from "../snipe";
 
 const imageClickHandler = (e) => {
