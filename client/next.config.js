@@ -10,6 +10,8 @@ const nextConfig = {
       },
     ],
   },
+  output: 'export',
+  // basePath: '/wheresWaldo',
 }
 
 module.exports = nextConfig

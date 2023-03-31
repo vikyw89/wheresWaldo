@@ -1,24 +1,24 @@
-import { Box, Button, Typography } from "@mui/material";
-import { FirebaseFirestore } from "firestore-web-wrapper";
-import Image from "next/image";
-import { useEffect } from "react";
-import { updateSyncV, useQueryV, useSyncV } from "use-sync-v";
-import { Loading } from "../loading";
+import { Box, Button, Typography } from '@mui/material'
+import { FirebaseFirestore } from 'firestore-web-wrapper'
+import Image from 'next/image'
+import { useEffect } from 'react'
+import { updateSyncV, useQueryV, useSyncV } from 'use-sync-v'
+import { Loading } from '../loading'
 
 const fetchStages = async () => {
-  const response = await FirebaseFirestore.readCol("stages");
-  return response;
-};
+  const response = await FirebaseFirestore.readCol('stages')
+  return response
+}
 
 const enterWorld = (worldData) => {
-  updateSyncV("show.stageSelector", false);
-  updateSyncV("show.gameScreen", true);
-  updateSyncV("state.selectedStage", worldData);
-};
+  updateSyncV('show.stageSelector', false)
+  updateSyncV('show.gameScreen', true)
+  updateSyncV('state.selectedStage', worldData)
+}
 
 export const StageSelector = () => {
-  const theme = useSyncV("theme");
-  const stages = useQueryV("state.stages", fetchStages);
+  const theme = useSyncV('theme')
+  const stages = useQueryV('state.stages', fetchStages)
 
   useEffect(()=>{
 
@@ -29,18 +29,18 @@ export const StageSelector = () => {
       {stages.data && (
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            padding: "20px",
-            borderRadius: "20px",
-            gap: "10px",
-            maxWidth: "100%",
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '20px',
+            borderRadius: '20px',
+            gap: '10px',
+            maxWidth: '100%',
           }}
         >
           <Typography
             sx={{
-              fontWeight: "bold",
-              textAlign: "center",
+              fontWeight: 'bold',
+              textAlign: 'center',
             }}
             variant="h4"
             color="secondary"
@@ -53,30 +53,30 @@ export const StageSelector = () => {
               navigation="true"
               effect="flip"
               grab-cursor="true"
-              style={{ height: "100%", maxWidth: "600px" }}
+              style={{ height: '100%', maxWidth: '600px' }}
             >
               {stages.data.map((el, index) => {
                 return (
                   <swiper-slide
                     key={index}
                     style={{
-                      backgroundPosition: "center",
-                      backgroundSize: "cover",
-                      display: "flex",
+                      backgroundPosition: 'center',
+                      backgroundSize: 'cover',
+                      display: 'flex',
                       // flexDirection: "column",
-                      flexWrap: "wrap",
-                      justifyContent: "space-between",
-                      gap: "10px",
-                      border: "1px solid white",
-                      padding: "10px",
+                      flexWrap: 'wrap',
+                      justifyContent: 'space-between',
+                      gap: '10px',
+                      border: '1px solid white',
+                      padding: '10px',
                     }}
                   >
                     <div
                       style={{
-                        height: "300px",
-                        width: "300px",
-                        overflow: "hidden",
-                        borderRadius: "20px",
+                        height: '300px',
+                        width: '300px',
+                        overflow: 'hidden',
+                        borderRadius: '20px',
                       }}
                     >
                       <Image
@@ -87,16 +87,16 @@ export const StageSelector = () => {
                         height="0"
                         sizes="100vw"
                         style={{
-                          width: "100%",
-                          height: "auto",
-                          objectFit: "cover",
+                          width: '100%',
+                          height: 'auto',
+                          objectFit: 'cover',
                         }}
                       />
                     </div>
                     <Box
                       sx={{
-                        display: "flex",
-                        flexDirection: "column",
+                        display: 'flex',
+                        flexDirection: 'column',
                       }}
                     >
                       <Typography
@@ -141,13 +141,13 @@ export const StageSelector = () => {
                               <Typography>{el2.name}</Typography>
                               <Typography>{el2.time}s</Typography>
                             </Box>
-                          );
+                          )
                         })}
                       </Box>
                     </Box>
                     <Button
                       sx={{
-                        width: "100%",
+                        width: '100%',
                       }}
                       variant="contained"
                       color="success"
@@ -157,12 +157,12 @@ export const StageSelector = () => {
                       <Typography variant="h4">Enter</Typography>
                     </Button>
                   </swiper-slide>
-                );
+                )
               })}
             </swiper-container>
           )}
         </Box>
       )}
     </>
-  );
-};
+  )
+}

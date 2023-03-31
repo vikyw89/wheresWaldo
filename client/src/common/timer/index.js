@@ -1,36 +1,36 @@
-import { Box } from "@mui/material";
-import { useEffect, useState } from "react";
-import { updateSyncV, useSyncV } from "use-sync-v";
+import { Box } from '@mui/material'
+import { useEffect } from 'react'
+import { updateSyncV, useSyncV } from 'use-sync-v'
 
 export const Timer = () => {
-  const timer = useSyncV("state.timer");
+  const timer = useSyncV('state.timer')
 
   useEffect(() => {
     const timerInterval = setInterval(() => {
-      updateSyncV("state.timer", (p) => {
+      updateSyncV('state.timer', (p) => {
         if (!p) {
-          p = 0;
+          p = 0
         }
-        return p + 1;
-      });
-    }, 1000);
+        return p + 1
+      })
+    }, 1000)
     return () => {
-      clearInterval(timerInterval);
-    };
-  }, []);
+      clearInterval(timerInterval)
+    }
+  }, [])
   return (
     <Box
       sx={{
-        display: "flex",
-        color: "white",
-        alignItems: "center",
-        justifyContent: "center"
+        display: 'flex',
+        color: 'white',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}
     >
       <span>countdown</span>
-      <span style={{ paddingLeft: "5px", color: "red", fontSize: "1.2rem" }}>
+      <span style={{ paddingLeft: '5px', color: 'red', fontSize: '1.2rem' }}>
         {timer}
       </span>
     </Box>
-  );
-};
+  )
+}
