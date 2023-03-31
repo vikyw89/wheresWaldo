@@ -39,7 +39,7 @@ export default function Home() {
   const { data, loading, error } = useQueryV("stages", async () => {
     return await FirebaseFirestore.readCol("stages");
   });
-
+  console.log('refreshHome')
   return (
     <Box
       sx={{

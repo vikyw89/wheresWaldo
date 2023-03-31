@@ -66,6 +66,7 @@ export const Snipe = () => {
   );
 
   const playerClickCoordinate = useSyncV("state.snipe.image");
+
   const validateCatchHandler = (e) => {
     updateSyncV("show.snipe", false);
     const doc_id = e.target.dataset["doc_id"];

@@ -16,8 +16,7 @@ export const Header = () => {
   const theme = useSyncV("theme");
   const showTimer = useSyncV("show.timer");
   const backToSelector = () => {
-    updateSyncV("show", state.show);
-    updateSyncV("data", state.state);
+    window.location.reload(false);
   };
   return (
     <Paper

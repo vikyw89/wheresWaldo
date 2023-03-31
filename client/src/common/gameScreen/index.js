@@ -1,11 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import { useEffect } from "react";
-import {
-  deleteSyncV,
-  readSyncV,
-  updateSyncV, useSyncV
-} from "use-sync-v";
+import { deleteSyncV, readSyncV, updateSyncV, useSyncV } from "use-sync-v";
 import { Snipe } from "../snipe";
 
 const imageClickHandler = (e) => {
@@ -30,8 +26,9 @@ const imageClickHandler = (e) => {
 export const GameScreen = () => {
   const selectedStage = useSyncV("state.selectedStage");
   const show = useSyncV("show");
-  const state = useSyncV("state");
-  
+  const snipe = useSyncV("state.snipe");
+  const notif = useSyncV("state.notif")
+  console.log("refreshGameScreen");
   useEffect(() => {
     const scrollHandler = (e) => {
       updateSyncV("show.snipe", false);
@@ -89,14 +86,14 @@ export const GameScreen = () => {
             border: "5px dashed red",
             borderRadius: "100px",
             position: "fixed",
-            top: state.snipe.screen.y - 50,
-            left: state.snipe.screen.x - 50,
+            top: snipe.screen.y - 50,
+            left: snipe.screen.x - 50,
             height: "100px",
             width: "100px",
             backdropFilter: "contrast(120%)",
           }}
         >
-          {state.notif}
+          {notif}
         </Typography>
       )}
       {show?.snipe && <Snipe />}
