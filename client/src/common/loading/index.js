@@ -11,7 +11,6 @@ export const Loading = () => {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          border: "5px solid red",
         }}
       >
         <CircularProgress sx={{ width: "80vw" }} />
