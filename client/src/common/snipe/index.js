@@ -1,23 +1,26 @@
 import { Box, Button, ButtonGroup, Typography, Zoom } from "@mui/material";
 import { FirebaseFirestore } from "firestore-web-wrapper";
-import { deleteSyncV, updateSyncV, useQueryV, useSyncV } from "use-sync-v";
+import { deleteSyncV, readSyncV, updateSyncV, useQueryV, useSyncV } from "use-sync-v";
+import { Loading } from "../loading";
 
 const validateCoordinate = (playerCLick, playerGuess) => {
   const { x, y } = playerCLick;
   const { startX, startY, endX, endY } = playerGuess.coordinate;
 
-  // by elimiation
+  // by elimination
   if (startX > x || startY > y || endX < x || endY < y) {
-    updateSyncV("ui.notif.targetCaught", "who's that ??");
+    updateSyncV("show.notif", true)
+    updateSyncV("state.notif", "NOPE");
     setTimeout(() => {
-      deleteSyncV("ui.notif.targetCaught");
+      deleteSyncV("show.notif");
+      deleteSyncV("state.notif");
     }, 5000);
     return;
   }
 
   // if the guess is right
   // remove from wantedList data
-  updateSyncV("fetch.wantedList.data", (p) => {
+  updateSyncV("state.selectedStage.wanted.data", (p) => {
     const filteredData = p.filter((el) => el.doc_id !== playerGuess.doc_id);
     return filteredData;
   });
@@ -25,7 +28,7 @@ const validateCoordinate = (playerCLick, playerGuess) => {
   // update cloud of times caught
   delete playerGuess.date_created;
   FirebaseFirestore.updateDoc(
-    `stages/5TD3C6tj9uIpUyOpxeQd/wanted/${playerGuess.doc_id}`,
+    `stages/${readSyncV("state.selectedStage.doc_id")}/wanted/${playerGuess.doc_id}`,
     {
       ...playerGuess,
       times_caught: playerGuess.times_caught + 1,
@@ -33,34 +36,49 @@ const validateCoordinate = (playerCLick, playerGuess) => {
   );
 
   // notiy user target is caught
-  updateSyncV("ui.notif.targetCaught", `You caught ${playerGuess.name} !`);
+  updateSyncV("show.notif", true);
+  updateSyncV("state.notif",`You caught ${playerGuess.name} !`)
   setTimeout(() => {
-    deleteSyncV("ui.notif.targetCaught");
+    deleteSyncV("show.notif");
+    deleteSyncV("state.notif")
   }, 5000);
+
+  // check win
+  if (readSyncV("state.selectedStage.wanted.data").length === 0) {
+    updateSyncV("show.win", true)
+    updateSyncV("show.gameScreen", false)
+    updateSyncV("show.timer", false)
+    
+  }
 };
 
-export const TargetDisplay = () => {
-  const { x, y } = useSyncV("ui.clickCoordinate.screen");
-  const wanted = useQueryV("fetch.wantedList", async () => {
-    const response = await FirebaseFirestore.readCol(
-      "/stages/5TD3C6tj9uIpUyOpxeQd/wanted/"
-    );
-    console.log('refetch')
-    return response;
-  });
-  const playerClickCoordinate = useSyncV("ui.clickCoordinate.image")
+export const Snipe = () => {
+  const selectedStageDocId = useSyncV("state.selectedStage.doc_id");
+  const { x, y } = useSyncV("state.snipe.screen");
+  const { data, loading, error } = useQueryV(
+    "state.selectedStage.wanted",
+    async () => {
+      const response = await FirebaseFirestore.readCol(
+        `stages/${selectedStageDocId}/wanted/`
+      );
+      return response;
+    }
+  );
+
+  const playerClickCoordinate = useSyncV("state.snipe.image");
+
   const validateCatchHandler = (e) => {
-    updateSyncV("ui.showTarget", false);
+    updateSyncV("show.snipe", false);
     const doc_id = e.target.dataset["doc_id"];
 
     // get document data for that doc_id
-    const playerGuess = wanted.data.filter((el) => {
+    const playerGuess = data.filter((el) => {
       return el.doc_id === doc_id;
     })[0];
 
     validateCoordinate(playerClickCoordinate, playerGuess);
   };
-console.log(wanted)
+
   return (
     <Box>
       <Box
@@ -80,11 +98,11 @@ console.log(wanted)
         sx={{
           color: "white",
           position: "fixed",
-          top: y - 100,
-          left: x - 50,
+          top: y - 10,
+          left: x - 150,
         }}
       >
-        who's this ?
+        catch ?
       </Typography>
       <Zoom in={true}>
         <ButtonGroup
@@ -98,8 +116,8 @@ console.log(wanted)
             flexDirection: "column",
           }}
         >
-          {wanted?.data &&
-            wanted.data.map((el, index) => {
+          {data &&
+            data.map((el, index) => {
               return (
                 <Button
                   key={el.doc_id}
@@ -112,6 +130,7 @@ console.log(wanted)
                 </Button>
               );
             })}
+          {loading && <Loading />}
         </ButtonGroup>
       </Zoom>
     </Box>
