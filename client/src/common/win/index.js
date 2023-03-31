@@ -1,30 +1,38 @@
 import { ShowChart } from "@mui/icons-material";
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { FirebaseFirestore } from "firestore-web-wrapper";
-import { useEffect } from "react";
-import { readSyncV, updateSyncV, useSyncV } from "use-sync-v";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { readSyncV, updateAsyncV, updateSyncV, useSyncV } from "use-sync-v";
 import { TextBubble } from "./textBubble";
 
 export const Win = () => {
   const theme = useSyncV("theme");
   const show = useSyncV("show");
+  const stageDocId = readSyncV("state.selectedStage.doc_id");
+  const originalDoc = readSyncV("state.stages.data").filter(
+    (el) => el.doc_id === stageDocId
+  )[0];
+  const [name, setName] = useState("");
+  console.log({ stageDocId, originalDoc });
 
-  const uploadRecord = (e) => {
-    const stageDocId = readSyncV("state.selectedStage.data.doc_id");
-    const originalDoc = readSyncV("state.stages.data").filter(
-      (el) => el.doc_id === stageDocId
-    )[0];
-    const recordData = {
-      name: e.target.value,
+  const uploadRecord = () => {
+    const newRecord = {
+      name: name,
       time: readSyncV("state.timer"),
     };
 
     const updatedDoc = {
       ...originalDoc,
-      records: [...originalDoc.records, recordData],
+      records: [...originalDoc.records, newRecord],
     };
-    console.log(updatedDoc);
-    // const response = FirebaseFirestore.updateDoc(`stages/${stageDocId}`,updatedDoc)
+
+    const response = FirebaseFirestore.updateDoc(
+      `stages/${stageDocId}`,
+      updatedDoc
+    );
+
+    window.location.reload(false);
   };
 
   return (
@@ -60,6 +68,10 @@ export const Win = () => {
           label="Input your name"
           sx={{
             flex: 1,
+          }}
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
           }}
         />
         <Button variant="contained" onClick={uploadRecord}>

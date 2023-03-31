@@ -1,6 +1,7 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Divider, Typography } from "@mui/material";
 import { FirebaseFirestore } from "firestore-web-wrapper";
 import Image from "next/image";
+import { useEffect } from "react";
 import { updateSyncV, useQueryV, useSyncV } from "use-sync-v";
 import { Loading } from "../loading";
 
@@ -10,15 +11,18 @@ const fetchStages = async () => {
 };
 
 const enterWorld = (worldData) => {
-  updateSyncV("show.stageSelector", false)
-  updateSyncV("show.gameScreen", true)
-  updateSyncV("state.selectedStage", worldData)
-}
+  updateSyncV("show.stageSelector", false);
+  updateSyncV("show.gameScreen", true);
+  updateSyncV("state.selectedStage", worldData);
+};
 
 export const StageSelector = () => {
   const theme = useSyncV("theme");
   const stages = useQueryV("state.stages", fetchStages);
 
+  useEffect(()=>{
+
+  })
   return (
     <>
       {stages.loading && <Loading />}
@@ -30,7 +34,7 @@ export const StageSelector = () => {
             padding: "20px",
             borderRadius: "20px",
             gap: "10px",
-            maxWidth:'100%'
+            maxWidth: "100%",
           }}
         >
           <Typography
@@ -47,10 +51,9 @@ export const StageSelector = () => {
           {stages.data && (
             <swiper-container
               navigation="true"
-              // pagination="true"
               effect="flip"
               grab-cursor="true"
-              style={{ height: "100%", width: "350px" }}
+              style={{ height: "100%", maxWidth: "600px" }}
             >
               {stages.data.map((el, index) => {
                 return (
@@ -60,10 +63,12 @@ export const StageSelector = () => {
                       backgroundPosition: "center",
                       backgroundSize: "cover",
                       display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      // flexDirection: "column",
+                      flexWrap: "wrap",
+                      justifyContent: "space-between",
                       gap: "10px",
+                      border: "1px solid white",
+                      padding: "10px",
                     }}
                   >
                     <div
@@ -88,38 +93,66 @@ export const StageSelector = () => {
                         }}
                       />
                     </div>
-                    <Typography
-                      variant="h3"
+                    <Box
                       sx={{
-                        color: theme.palette.text.primary,
+                        display: "flex",
+                        flexDirection: "column",
                       }}
                     >
-                      {el.name}
-                    </Typography>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        color: theme.palette.text.primary,
-                      }}
-                    >
-                      Author : {el.author}
-                    </Typography>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        color: theme.palette.text.primary,
-                      }}
-                    >
-                      Best Record : --s
-                    </Typography>
+                      <Typography
+                        variant="h3"
+                        sx={{
+                          color: theme.palette.text.primary,
+                        }}
+                      >
+                        {el.name}
+                      </Typography>
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          color: theme.palette.text.primary,
+                        }}
+                      >
+                        Author : {el.author}
+                      </Typography>
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          color: theme.palette.text.primary,
+                        }}
+                      >
+                        Best Records :
+                      </Typography>
+                      <Box sx={{
+                        overflowY:'scroll',
+                        height:'100%'
+                      }}>
+                        {el?.records.sort((a,b)=>a.time - b.time).map((el2, index2) => {
+                          return (
+                            <Box key={index2} sx={{
+                              // border:'1px solid red',
+                              color:'white',
+                              display:'flex',
+                              justifyContent:'space-between',
+                              borderRadius:'5px',
+                              backgroundColor:'hsla(255,80%,80%,40%)',
+                              padding:'5px'
+                            }}>
+                              <Typography>{el2.name}</Typography>
+                              <Typography>{el2.time}s</Typography>
+                            </Box>
+                          );
+                        })}
+                      </Box>
+                    </Box>
                     <Button
                       sx={{
-                        width: "80%",
+                        width: "100%",
                       }}
                       variant="contained"
                       color="success"
                       size="large"
-                      onClick={()=>enterWorld(el)}
+                      onClick={() => enterWorld(el)}
                     >
                       <Typography variant="h4">Enter</Typography>
                     </Button>
