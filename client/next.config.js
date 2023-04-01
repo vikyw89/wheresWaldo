@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -10,8 +11,8 @@ const nextConfig = {
       },
     ],
   },
-  output: 'export',
-  // basePath: '/wheresWaldo',
+  trailingSlash:true,
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH,
 }
 
 module.exports = nextConfig
