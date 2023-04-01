@@ -48,7 +48,6 @@ const validateCoordinate = (playerCLick, playerGuess) => {
     updateSyncV('show.win', true)
     updateSyncV('show.gameScreen', false)
     updateSyncV('show.timer', false)
-
   }
 }
 

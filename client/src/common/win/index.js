@@ -41,7 +41,7 @@ export const Win = () => {
       <TextBubble text={'YOU WON !'} />
       <TextBubble
         text={`Congratz on winning ${readSyncV(
-          'state.selectedWorld.data.name'
+          'state.selectedStage.name'
         )}`}
       />
       <TextBubble
