@@ -1,6 +1,8 @@
 # wheresWaldo
 
-live preview: WIP
+live preview: 
+FirebaseHosting => https://whereswaldo-f62b8.firebaseapp.com/
+gh-page => -https://vikyw89.github.io/wheresWaldo/
 
 <section id="assignment">
   <h3><a href="#assignment" class="anchor-link">Assignment</a></h3>
