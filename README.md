@@ -2,6 +2,7 @@
 
 live preview: 
 FirebaseHosting => https://whereswaldo-f62b8.firebaseapp.com/
+
 gh-page => -https://vikyw89.github.io/wheresWaldo/
 
 <section id="assignment">
