@@ -1,14 +1,10 @@
-import { Footer } from "@/common/footer";
-import { GameScreen } from "@/common/gameScreen";
-import { Header } from "@/common/header";
-import { StageSelector } from "@/common/stageSelector";
-import { Win } from "@/common/win";
-import { Box } from "@mui/system";
-import { FirebaseFirestore } from "firestore-web-wrapper";
-import { Inter } from "next/font/google";
-import { updateSyncV, useQueryV, useSyncV } from "use-sync-v";
-
-const inter = Inter({ subsets: ["latin"] });
+import { Footer } from '@/common/footer'
+import { GameScreen } from '@/common/gameScreen'
+import { Header } from '@/common/header'
+import { StageSelector } from '@/common/stageSelector'
+import { Win } from '@/common/win'
+import { Box } from '@mui/system'
+import { updateSyncV, useSyncV } from 'use-sync-v'
 
 export const state = {
   show: {
@@ -25,30 +21,22 @@ export const state = {
     selectedStage: null,
     notif: null,
   },
-};
+}
 
-updateSyncV("show", state.show);
-updateSyncV("data", state.state);
+updateSyncV('show', state.show)
+updateSyncV('data', state.state)
 export default function Home() {
-  const theme = useSyncV("theme");
-
-  const show = useSyncV("show");
-
-  const win = useSyncV("show.win");
-
-  const { data, loading, error } = useQueryV("stages", async () => {
-    return await FirebaseFirestore.readCol("stages");
-  });
+  const show = useSyncV('show')
 
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100%",
-        margin: "0 auto",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100%',
+        margin: '0 auto',
       }}
     >
       <Header />
@@ -57,5 +45,5 @@ export default function Home() {
       {show.win && <Win />}
       <Footer />
     </Box>
-  );
+  )
 }
